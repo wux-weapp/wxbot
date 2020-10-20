@@ -1,0 +1,18 @@
+{
+  "name": "wxbot-plugin",
+  "version": "0.0.1",
+  "description": "微信机器人插件版",
+  "author": "skyvow",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wux-weapp/wxbot"
+  },
+  "scripts": {
+    "start": "node index"
+  },
+  "dependencies": {
+    "wechaty": "^0.47.7",
+    "wechaty-puppet-padplus": "^0.7.34",
+    "wechaty-plugin-contrib": "^0.14.12"
+  }
+}
