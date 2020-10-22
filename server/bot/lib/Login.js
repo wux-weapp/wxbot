@@ -9,6 +9,7 @@ const logger = require('../../util/logger')
 const { Robot } = require('../../models/robot')
 const { Group } = require('../../models/group')
 const { Friend } = require('../../models/friend')
+const { init, stop } = require('./Task')
 /**
  * 登录
  * @param {object} bot 
@@ -55,7 +56,7 @@ const onLogin = async (bot, robot_id, user) => {
   }
   global.bot = bot
   await bot.say(robot.startSay)
-  require('./Task').init()
+  init()
   return {isLogin:true}
 }
 /**
@@ -64,6 +65,7 @@ const onLogin = async (bot, robot_id, user) => {
  */
 async function onLogout(user) {
   await Robot.updateOne({id:bot.id},{status:0})
+  stop()
   delete global.bot
   logger.info(`机器人${user} 退出`)
 }

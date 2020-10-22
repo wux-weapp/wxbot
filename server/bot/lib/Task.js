@@ -31,6 +31,7 @@ let tasks = {}
  * 初始化任务列表
  */
 const init = async () => {
+  stop()
   logger.info('初始化任务...')
   const list = await Task.find({ status: 1, robotId: bot.id })
   for (let i = 0; i < list.length; i++) {
@@ -94,12 +95,21 @@ const start = async (data) => {
 }
 /**
  * 停止任务
+ * 
+ * 当 id 存在时，停止指定的任务，否则停止所有任务
  * @param {string} id 
  */
 const stop = async (id) => {
   try {
-    tasks[id].cancel()
-    delete tasks[id]
+    if (!id) {
+      for (let key in tasks) {
+        tasks[key].cancel()
+        delete tasks[key]
+      }
+    } else {
+      tasks[id].cancel()
+      delete tasks[id]
+    }
   } catch (err) {
     console.log(err)
   }
