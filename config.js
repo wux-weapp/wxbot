@@ -3,6 +3,7 @@ const local = {
   host: '0.0.0.0',
   mongoUrl: 'mongodb://localhost:27017/wxrobot',
   secret: '123456',
+  tianApiUrl: 'http://api.tianapi.com/txapi/',
   tianApiKey: 'b763560bb7c00141e22975caab915455'
 }
 const development = {

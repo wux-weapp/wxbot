@@ -1,6 +1,5 @@
 const request = require('request')
-const TXHOST = 'http://api.tianapi.com/txapi/'
-const { tianApiKey } = require('../../config')
+const { tianApiUrl, tianApiKey } = require('../../config')
 const urllib = require('urllib')
 
 const articleTypes = [
@@ -85,7 +84,7 @@ async function getArticleFromJUEJIN () {
  * @returns
  */
 async function getArticleFromTIANGOU () {
-  let url = TXHOST + 'tiangou/index';
+  let url = tianApiUrl + 'tiangou/index';
   const pkg = {
     method: 'get',
     headers: {

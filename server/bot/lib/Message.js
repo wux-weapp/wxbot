@@ -14,8 +14,7 @@ const { v1 } = require('node-uuid')
 const crypto = require('crypto')
 let md5 = crypto.createHash('md5')
 const uniqueId = md5.update(v1()).digest('hex')
-const TXHOST = 'http://api.tianapi.com/txapi/'
-const { tianApiKey } = require('../../../config')
+const { tianApiUrl, tianApiKey } = require('../../../config')
 const urllib = require('urllib')
 
 async function onMessage(msg) {
@@ -154,7 +153,7 @@ async function keyWordReply(keyword, roomId, person, room) {
  * @return {String} 响应内容
  */
 async function getReply(keyword) {
-  let url = TXHOST + 'robot/';
+  let url = tianApiUrl + 'robot/';
   const pkg = {
     method: 'get',
     headers: {

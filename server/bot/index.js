@@ -9,10 +9,10 @@ const logger = require('../util/logger')
 const { Wechaty } = require('wechaty')
 const { PuppetPadplus } = require('wechaty-puppet-padplus')
 const { Robot } = require('../models/robot')
-const {onLogin,onLogout} = require('./lib/Login')
+const { onLogin,onLogout } = require('./lib/Login')
 const onFriendShip = require('./lib/FriendShip')
 const onMessage = require('./lib/Message')
-const {onRoomJoin,onRoomLeave} = require('./lib/Room')
+const { onRoomJoin, onRoomLeave } = require('./lib/Room')
 class Bot {
   constructor(_id, debug = false) {
     this._id = _id
