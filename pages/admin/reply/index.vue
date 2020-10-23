@@ -68,7 +68,7 @@ const columns = [
   },
   {
     title: "描述",
-    dataIndex: "describe",
+    dataIndex: "remark",
     align: "center"
   },
   {
