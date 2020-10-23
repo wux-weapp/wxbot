@@ -9,23 +9,8 @@ const logger = require('../../util/logger')
 const schedule = require('node-schedule')
 const { Task } = require('../../models/task')
 const { Group } = require('../../models/group')
-const { getArticle, articleTypes } = require('../../util/ajax')
+const { getMSG } = require('../../util/ajax')
 
-/**
- * 识别定时任务做特殊处理
- */
-const getMSG = async (content) => {
-  let type = content ? content.trim() : ''
-  if (type && articleTypes.includes(type)) {
-    try {
-      let msg = await getArticle(type)
-      if (!!msg) { type = msg }
-    } catch (err) {
-      console.log(err)
-    }
-  }
-  return type
-}
 let tasks = {}
 /**
  * 初始化任务列表

@@ -10,6 +10,7 @@ const { Group } = require('../../models/group')
 const { Robot } = require('../../models/robot')
 const { Reply } = require('../../models/reply')
 const { Memory } = require('../../models/memory')
+const { getMSG } = require('../../util/ajax')
 const { v1 } = require('node-uuid')
 const crypto = require('crypto')
 let md5 = crypto.createHash('md5')
@@ -111,8 +112,8 @@ async function keyWordReply(keyword, roomId, person, room) {
     if (!res) return false
     if (roomId) { //群聊
       if (res.type == 0) {
-        if (res.factor == 0 || res.factor == 3) return res.content
-        if (res.factor == 2 && roomId == res.roomId) return res.content
+        if (res.factor == 0 || res.factor == 3) return getMSG(res.content)
+        if (res.factor == 2 && roomId == res.roomId) return getMSG(res.content)
       }
       if (res.type == 2) {
         if (person) {
