@@ -22,7 +22,7 @@
 
 ## 初识 wechaty
 
-`Wechaty` 是一个开源的的对话机器人 `SDK`，支持 `个人号` 微信。它是一个使用 `Typescript` 构建的 `Node.js` 应用。支持多种微信接入方案，包括网页，`ipad`，`ios`，`windows`，`android` 等。同时支持 `Linux`, `Windows`, `Darwin(OSX/Mac) ` 和 `Docker` 多个平台。
+`Wechaty` 是一个开源的的对话机器人 `SDK`，支持 `个人号` 微信。它是一个使用 `Typescript` 构建的 `Node.js` 应用。支持多种微信接入方案，包括网页，`ipad`，`ios`，`windows`，`android` 等。同时支持 `Linux`, `Windows`, `Darwin(OSX/Mac)` 和 `Docker` 多个平台。
 
 先看一下官方文档：
 
@@ -44,6 +44,7 @@ Wechaty.instance()
 ```
 
 更多功能包括：
+
 - 消息处理：关键词回复
 - 群管理：自动入群，拉人，踢人
 - 自动处理好友请求
@@ -126,7 +127,7 @@ Wechaty.instance()
   - 低智商对话
   - 成语接龙，查天气，查酒店，歇后语...
 
-![admin](/assets/2020/wxbot-admin/admin.png)
+![admin](./screenshots/admin.png)
 
 ### 技术构成
 
@@ -210,7 +211,7 @@ npm start
 
 ##### tianApiKey
 
-`String` (天行数据秘钥)[https://www.tianapi.com/console/]
+`String` 类型，[天行数据秘钥](https://www.tianapi.com/console/)
 
 ### 线上部署
 
@@ -232,26 +233,26 @@ pm2 start pm2.config.js
 
 ### 踩坑
 
-1. `Wechaty Token` 申请及使用文档和常见问题
+1.`Wechaty Token` 申请及使用文档和常见问题
 
 - [Wechaty 开源激励计划2.0 申请表](https://juzibot.wjx.cn/jq/80103105.aspx)
 - [填写项目信息](https://github.com/juzibot/Welcome/wiki/Support-Developers)
 - [Wechaty Token 申请及使用文档和常见问题](https://github.com/juzibot/Welcome/wiki/Everything-about-Wechaty)
 
-2. `tianApiKey` 申请及天行机器人配置
+2.`tianApiKey` 申请及天行机器人配置
 
 - 首先，去 [天行数据](https://www.tianapi.com/console/) 注册账号，申请 `APIKEY`
 - 其次，申请 [天行机器人](https://www.tianapi.com/apiview/47) 接口，用于机器人自动回复
 - 最后，别忘记配置 [机器人身份设置](https://www.tianapi.com/console/)，否则在机器人回复中会有奇怪的代码串，如 `{robotname}`
 
-3. 部署中执行 `sudo pm2` 报错 `command not found` 问题
+3.部署中执行 `sudo pm2` 报错 `command not found` 问题
 
- - 原因是没有将 `pm2` 加至环境变量中，先找到 `node` 的目录 可以用 `whereis node` 来查找，然后查找 `whereis pm2`，再使用 `ln` 建立软连接
- - 参考文章 [Linux下使用pm2部署node以及安装后command not found解决](https://blog.csdn.net/d597180714/article/details/82619735)
+- 原因是没有将 `pm2` 加至环境变量中，先找到 `node` 的目录 可以用 `whereis node` 来查找，然后查找 `whereis pm2`，再使用 `ln` 建立软连接
+- 参考文章 [Linux下使用pm2部署node以及安装后command not found解决](https://blog.csdn.net/d597180714/article/details/82619735)
 
-4. 部署中执行 `sudo pm2` 报错 `permission denied` 问题
+4.部署中执行 `sudo pm2` 报错 `permission denied` 问题
 
-- 原因是项目会动态生成中 `logs` 目录中的文件，报错权限不足，即 `Permission denied`
+- 原因是项目会动态生成中 `logs` 目录中的文件，报错权限不足，即 `permission denied`
 - 参考文章 [解决 pm2 中的 permission denied 问题](https://blog.csdn.net/geol200709/article/details/81744477)
 
 ## 感谢
@@ -262,4 +263,3 @@ pm2 start pm2.config.js
 - 感谢 [beclass](https://github.com/beclass) 的开源项目 [`wxbot`](https://github.com/beclass/wxbot)，这是一套优秀的微信机器人平台。
 - 感谢 [Wechaty](https://wechaty.github.io/) 团队提供微信机器人 `SDK`，让开发者可以专注于业务代码。
 - 感谢 [句子互动](https://www.juzibot.com) 提供的 `pad` 协议版 `token`。
-
