@@ -3,8 +3,12 @@ const config = {
   BOT_NAME: "机器人名字",
 }
 
-if (process.env.NODE_ENV == 'development') {
-  Object.assign(config, require('../.local.config'))
+if (process.env.NODE_ENV === 'test') {
+  try {
+    Object.assign(config, require('../.local.config'))
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 module.exports = config

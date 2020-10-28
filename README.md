@@ -166,6 +166,14 @@ cnpm i
 
 #### 启动服务
 
+- 本地单机插件版本
+
+首先需要修改配置文件 `local/config.js` 或者根目录创建 `.local.config.js` 配置文件（此文件已加入 `.gitignore` 中可以防止 `token` 敏感信息上传至 `git`）。
+
+```sh
+npm run local
+```
+
 - 开发模式
 
 ```sh

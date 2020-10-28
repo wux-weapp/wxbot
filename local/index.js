@@ -19,6 +19,9 @@ const {
   QRCodeTerminal,
   EventLogger
 } = require('wechaty-plugin-contrib') //官方插件
+
+if (process.env.NODE_ENV !== 'test') { return }
+
 // 初始化
 const bot = new Wechaty({
   puppet: new PuppetPadplus({
