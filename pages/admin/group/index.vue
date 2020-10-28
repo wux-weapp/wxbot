@@ -4,7 +4,7 @@
     <a-card>共{{groups.length}}个群聊</a-card>
     <a-row :gutter="16">
       <a-col :span="6" v-for="item in groups" :key="item._id">
-        <a-card :bordered="false">
+        <a-card :bordered="false" :bodyStyle="bodyStyle">
           <a-card-meta :title="item.topic" :description="item.memberIdList.length+'人'">
             <a-avatar slot="avatar" :src="item.avatar" />
           </a-card-meta>
@@ -70,6 +70,9 @@ export default {
   components: { SayV },
   data() {
     return {
+      bodyStyle: {
+        minHeight: '93px'
+      },
       loading: false,
       visible: false,
       visible2:false,
