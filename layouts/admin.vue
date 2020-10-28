@@ -6,47 +6,48 @@
       v-model="collapsed"
       breakpoint="lg"
       class="layout-sider"
+      v-if="!isSmallScreen"
     >
       <div class="logo">{{title}}</div>
       <a-menu theme="dark" mode="inline" :selected-keys="[currentKey]">
-        <a-menu-item key="index" title="控制台">
-          <nuxt-link to="/admin">
-            <a-icon type="dashboard" />
-            <span>控制台</span>
-          </nuxt-link>
-        </a-menu-item>
-        <a-menu-item key="reply" title="自动回复">
-          <nuxt-link to="/admin/reply">
-            <icon-font type="icon-chakantiezihuifu" />
-            <span>自动回复</span>
-          </nuxt-link>
-        </a-menu-item>
-        <a-menu-item key="friend" title="我的好友">
-          <nuxt-link to="/admin/friend">
-            <icon-font type="icon-haoyou" />
-            <span>我的好友</span>
-          </nuxt-link>
-        </a-menu-item>
-        <a-menu-item key="group" title="我的群聊">
-          <nuxt-link to="/admin/group">
-            <icon-font type="icon-qun" />
-            <span>我的群聊</span>
-          </nuxt-link>
-        </a-menu-item>
-        <a-menu-item key="task" title="定时任务">
-          <nuxt-link to="/admin/task">
-            <icon-font type="icon-dingshirenwu" />
-            <span>定时任务</span>
+        <a-menu-item v-for="item in menuList" :key="item.index" :title="item.title">
+          <nuxt-link :to="item.url">
+            <a-icon :type="item.icon" v-if="!item.icon.startsWith('icon')" />
+            <icon-font :type="item.icon" v-else />
+            <span>{{item.title}}</span>
           </nuxt-link>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
+    <a-drawer
+      placement="left"
+      width="200"
+      :closable="false"
+      :visible="drawerVisible"
+      @close="() => (drawerVisible = !drawerVisible)"
+      v-else
+    >
+      <a-layout-sider
+        class="layout-sider"
+      >
+        <div class="logo">{{this.$store.state.robot.appName}}</div>
+        <a-menu theme="dark" mode="inline" :selected-keys="[currentKey]">
+          <a-menu-item v-for="item in menuList" :key="item.index" :title="item.title">
+            <nuxt-link :to="item.url">
+              <a-icon :type="item.icon" v-if="!item.icon.startsWith('icon')" />
+              <icon-font :type="item.icon" v-else />
+              <span>{{item.title}}</span>
+            </nuxt-link>
+          </a-menu-item>
+        </a-menu>
+      </a-layout-sider>
+    </a-drawer>
     <a-layout :style="{ marginLeft }">
       <a-layout-header class="layout-header">
         <a-icon
           class="trigger"
           :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-          @click="() => (collapsed = !collapsed)"
+          @click="onClick"
         />
         <div class="auth-actions">
           <a-dropdown placement="bottomRight">
@@ -66,7 +67,7 @@
         <nuxt />
       </a-layout-content>
       <a-layout-footer :style="{ textAlign: 'center' }">
-        <a href="https://github.com/wux-weapp/wxbot.git" target="_blank">wxbot-robot@2020</a>
+        <a href="https://github.com/wux-weapp/wxbot.git" target="_blank">wxbot@2020</a>
       </a-layout-footer>
     </a-layout>
   </a-layout>
@@ -89,6 +90,34 @@ export default {
   },
   data() {
     return {
+      menuList: [{
+        key: 'index',
+        title: '控制台',
+        url: '/admin',
+        icon: 'dashboard'
+      }, {
+        key: 'reply',
+        title: '自动回复',
+        url: '/admin/reply',
+        icon: 'icon-chakantiezihuifu'
+      }, {
+        key: 'friend',
+        title: '我的好友',
+        url: '/admin/friend',
+        icon: 'icon-haoyou'
+      }, {
+        key: 'group',
+        title: '我的群聊',
+        url: '/admin/group',
+        icon: 'icon-qun'
+      }, {
+        key: 'task',
+        title: '定时任务',
+        url: '/admin/task',
+        icon: 'icon-dingshirenwu'
+      }],
+      isSmallScreen: false,
+      drawerVisible: false,
       collapsed: false,
       currentKey: ""
     };
@@ -100,6 +129,7 @@ export default {
         : this.$store.state.robot.appName;
     },
     marginLeft() {
+      if (this.isSmallScreen) { return 0 }
       return this.collapsed ? "80px" : "200px";
     }
   },
@@ -114,8 +144,22 @@ export default {
       this.$nuxt.$loading.start();
       setTimeout(() => this.$nuxt.$loading.finish(), 500);
     });
+    this.onResize()
+    window.addEventListener('resize', () => {
+      this.onResize()
+    })
   },
   methods: {
+    onResize () {
+      this.isSmallScreen = document.documentElement.clientWidth < 768
+    },
+    onClick () {
+      if (this.isSmallScreen) {
+        this.drawerVisible = !this.drawerVisible
+        return
+      }
+      this.collapsed = !this.collapsed
+    },
     logout() {
       this.$auth.logout("local");
     },
@@ -136,10 +180,26 @@ export default {
 }
 </script>
 <style>
+@media(max-width: 480px) {
+  .ant-table {
+    width:100%;
+    overflow-x: auto;
+  }
+
+  .ant-table-tbody>tr>td,.ant-table-tbody>tr>th,.ant-table-thead>tr>td,.ant-table-thead>tr>th {
+    white-space: pre
+  }
+
+  .ant-table-tbody>tr>td>span,.ant-table-tbody>tr>th>span,.ant-table-thead>tr>td>span,.ant-table-thead>tr>th>span {
+    display: block
+  }
+}
+</style>
+<style>
 body {
   background: #f0f2f5;
 }
-.layout-admin .logo {
+.logo {
   height: 38px;
   background: rgba(255, 255, 255, 0.2);
   margin: 16px;
@@ -167,6 +227,7 @@ body {
   top: 0;
   bottom: 0;
   left: 0;
+  z-index: 1;
 }
 
 .layout-header {

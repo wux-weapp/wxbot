@@ -1,6 +1,6 @@
 <template>
   <a-card>
-    <a-row :gutter="16">
+    <a-row :gutter="[16, 16]">
       <a-col :xs="24" :sm="12" :md="5" :lg="5">
         <a-input v-model="filters.search$$name$$all" placeholder="输入名称搜索" />
       </a-col>
@@ -11,6 +11,7 @@
     </a-row>
     <div style="margin:10px 0">
       <a-table
+        tableLayout="auto"
         :columns="columns"
         :dataSource="list"
         :loading="loading"
@@ -28,13 +29,14 @@
           {{(record.hour||record.hour==0)?record.hour+'时':''}}{{(record.minute||record.minute==0)?record.minute+'分':''}}{{(record.second||record.second==0)&&'第'+record.second+'秒'}}
         </span>
         <span slot="action" slot-scope="text,record,index">
-          <a-button
-            size="small"
-            style="margin-right: 5px"
-            type="primary"
-            @click="handleEdit(record)"
-          >修改</a-button>
-          <a-button size="small" type="danger" @click="handleDelete([record._id],index)">删除</a-button>
+          <a-button-group>
+            <a-button
+              size="small"
+              type="primary"
+              @click="handleEdit(record)"
+            >修改</a-button>
+            <a-button size="small" type="danger" @click="handleDelete([record._id],index)">删除</a-button>
+          </a-button-group>
         </span>
       </a-table>
     </div>
@@ -67,7 +69,7 @@ const columns = [
     title: "内容",
     dataIndex: "content",
     align: "center",
-    ellipsis: true,
+    // ellipsis: true,
     width: 500
   },
   {

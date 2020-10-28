@@ -1,6 +1,6 @@
 <template>
   <a-card>
-    <a-row :gutter="16">
+    <a-row :gutter="[16, 16]">
       <a-col :xs="24" :sm="12" :md="5" :lg="5">
         <a-input v-model="filters.search$$name$$all" placeholder="输入昵称搜索" />
       </a-col>
@@ -10,6 +10,7 @@
     </a-row>
     <div style="margin:10px 0">
       <a-table
+        tableLayout="auto"
         :columns="columns"
         :dataSource="list"
         :loading="loading"

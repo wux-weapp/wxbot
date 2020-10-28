@@ -6,7 +6,7 @@
     </a-empty>
     <div v-else>
       <a-row>
-        <a-col :span="12" class="rInfo">
+        <a-col :sm="12" class="rInfo">
           <p><span class="name">{{robot.nickName}} </span><a-icon type="edit" @click="()=>{this.temp = this.robot,this.visible=true}"/> </p>
           <p><span class="title">上次登录时间：</span> <span v-if="robot.lastLoginT">{{ robot.lastLoginT | toDate }}</span><span v-else>未登录</span></p>
           <p><span class="title">启动提示语：</span>{{robot.startSay}}</p>
@@ -17,7 +17,7 @@
           <p><span class="title">好友验证通过自动回复：</span>{{robot.addFriendReply}}</p>
           <p><span class="title">Token：</span>{{robot.token?"******************************":""}}</p>
         </a-col>
-        <a-col :span="12" style="text-align:right"><a-switch checkedChildren="开启" :checked="robot.status==1?true:false" unCheckedChildren="关闭" @change="onChangeRobot" /></a-col>
+        <a-col :sm="12" style="text-align:right"><a-switch checkedChildren="开启" :checked="robot.status==1?true:false" unCheckedChildren="关闭" @change="onChangeRobot" /></a-col>
       </a-row>
     </div>
     <a-modal title="微信扫码登录" v-model="showQrcode" :footer="null" :maskClosable="false" :width="200">
@@ -48,7 +48,7 @@
           <a-textarea v-model="temp.addFriendReply" auto-size/>
         </a-form-model-item>
         <a-form-model-item label="协议Token">
-          <a-input v-model="temp.token"/>
+          <a-input-password autocomplete="new-password" v-model="temp.token"/>
         </a-form-model-item>
       </a-form-model>
     </a-modal>
