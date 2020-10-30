@@ -4,7 +4,11 @@
       <a-col :xs="24" :sm="12" :md="5" :lg="5">
         <a-input v-model="filters.search$$name$$all" placeholder="输入名称搜索" />
       </a-col>
-      <a-col :xs="24" :sm="12" :md="8" :lg="8">
+      <a-col :xs="24" :sm="12" :md="5" :lg="5">
+        <a-select :options="options" v-model="filters.search$$status$$" placeholder="请选择" style="width: 100%" />
+      </a-col>
+      <a-col :xs="24" :sm="12" :md="12" :lg="8">
+        <a-button icon="reload" type="default" @click="reset">重置</a-button>&nbsp;
         <a-button icon="search" type="primary" @click="search">搜索</a-button>&nbsp;
         <a-button icon="plus" type="primary" @click="handleAdd">添加</a-button>
       </a-col>
@@ -99,7 +103,7 @@ export default {
   data() {
     return {
       loading: false,
-      filters: { search$$robotId$$: this.$auth.user.robotId || 0 },
+      filters: { search$$robotId$$: this.$auth.user.robotId || 0, search$$status$$: '' },
       columns,
       list: [],
       pagination: { total: 0, showQuickJumper: true, size: "lage" },
@@ -107,6 +111,7 @@ export default {
       taskFactors,
       taskTypes,
       statusList,
+      options: [{ value: '', title: '全部' }, ...statusList.map((v, i) => ({ value: i, title: v }))],
       units
     };
   },
@@ -114,6 +119,18 @@ export default {
     this.getList();
   },
   methods: {
+    reset() {
+      this.filters = {
+        ...this.filters,
+        search$$status$$: '',
+        page: 1
+      }
+      this.pagination = {
+        ...this.pagination,
+        total: 0
+      }
+      this.getList();
+    },
     async getList() {
       this.loading = true;
       const res = await this.$axios.$get("/admin/task/", {

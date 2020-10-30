@@ -4,7 +4,11 @@
       <a-col :xs="24" :sm="12" :md="5" :lg="5">
         <a-input v-model="filters.search$$name$$all" placeholder="输入昵称搜索" />
       </a-col>
-      <a-col :xs="24" :sm="12" :md="8" :lg="8">
+      <a-col :xs="24" :sm="12" :md="5" :lg="5">
+        <a-select :options="options" v-model="filters.search$$gender$$" placeholder="请选择" style="width: 100%" />
+      </a-col>
+      <a-col :xs="24" :sm="12" :md="12" :lg="8">
+        <a-button icon="reload" type="default" @click="reset">重置</a-button>&nbsp;
         <a-button icon="search" type="primary" @click="search">搜索</a-button>
       </a-col>
     </a-row>
@@ -23,7 +27,7 @@
         <span slot="avatar" slot-scope="avatar">
           <a-avatar :src="avatar" />
         </span>
-        <span slot="gender" slot-scope="gender">{{['未知','男','女'][gender]}}</span>
+        <span slot="gender" slot-scope="gender">{{options.filter(v => v.value !== '').map(v => v.title)[gender]}}</span>
         <span slot="province" slot-scope="text,record">{{record.province}}-{{record.city}}</span>
         <span slot="action" slot-scope="text,record">
           <a-button size="small" type="primary" @click="handleSay(record)">发消息</a-button>
@@ -86,7 +90,8 @@ export default {
   data() {
     return {
       loading: false,
-      filters: { search$$robotId$$: this.$auth.user.robotId || 0 },
+      filters: { search$$robotId$$: this.$auth.user.robotId || 0, search$$gender$$: '' },
+      options: [{ value: '', title: '全部' }, { value: 0, title: '未知' }, { value: 1, title: '男' }, { value: 2, title: '女' }],
       columns,
       list: [],
       pagination: { total: 0, showQuickJumper: true, size: "lage" },
@@ -97,6 +102,18 @@ export default {
     this.getList();
   },
   methods: {
+    reset() {
+      this.filters = {
+        ...this.filters,
+        search$$gender$$: '',
+        page: 1
+      }
+      this.pagination = {
+        ...this.pagination,
+        total: 0
+      }
+      this.getList();
+    },
     async getList() {
       this.loading = true;
       const res = await this.$axios.$get("/admin/friend/", {

@@ -15,12 +15,16 @@ const schema = new Schema({
   control: { type: Boolean, default: false },
 })
 const Group = mongoose.model('group', schema, 'group')
+const { parseSearch } = require('../util')
 module.exports = {
   Group,
   Dao:{
-    myGroups:async(id)=>{
+    myGroups:async(params)=>{
       try { 
-        const result = await Group.find({robotId:id})
+        const condition = parseSearch(params)
+        const sortF = { sort: { 'control': -1, 'joinCode': 1 } }
+        const fields = {};
+        const result = await Group.find(condition, fields, sortF)
         return result
       } catch (err) { throw err }
     },

@@ -1,12 +1,35 @@
 <template>
   <div>
     <a-spin :spinning="loading">
-    <a-card :style="{marginBottom: '16px'}">共{{groups.length}}个群聊</a-card>
+    <a-card :style="{marginBottom: '16px'}">
+      <a-row :gutter="[16, 16]">
+        <a-col :xs="24" :sm="12" :md="5" :lg="5">
+          <a-input v-model="filters.search$$topic$$all" placeholder="输入群名称搜索" />
+        </a-col>
+        <a-col :xs="24" :sm="12" :md="5" :lg="5">
+          <a-select :options="options" v-model="filters.search$$control$$" placeholder="请选择" style="width: 100%" />
+        </a-col>
+        <a-col :xs="24" :sm="12" :md="12" :lg="8">
+          <a-button icon="reload" type="default" @click="reset">重置</a-button>&nbsp;
+          <a-button icon="search" type="primary" @click="search">搜索</a-button>
+        </a-col>
+        <a-col :span="24">
+          <div>共 {{groups.length}} 个群聊</div>
+        </a-col>
+        <a-col :span="24">
+          <a-icon type="question-circle"/> 机器人控制
+          <a-badge status="success" text="允许" :style="{ marginLeft: '8px' }" />
+          <a-badge status="error" text="禁止" :style="{ marginLeft: '8px' }" />
+        </a-col>
+      </a-row>
+    </a-card>
     <a-row :gutter="[16, 16]">
       <a-col :xs="24" :sm="12" :md="6" v-for="item in groups" :key="item._id">
         <a-card :bordered="false" :bodyStyle="bodyStyle">
           <a-card-meta :title="item.topic" :description="item.memberIdList.length+'人'">
-            <a-avatar slot="avatar" :src="item.avatar" />
+            <a-badge slot="avatar" dot :color="item.control ? '#52c41a' : '#f5222d'">
+              <a-avatar :src="item.avatar" />
+            </a-badge>
           </a-card-meta>
           <template class="ant-card-actions" slot="actions">
             <a-icon key="setting" type="setting" @click="handleSet(item.id)"/>
@@ -27,7 +50,7 @@
           <a-input v-model="temp.joinCode" />
         </a-form-model-item>
         <a-form-model-item label="入群欢迎语">
-          <a-textarea v-model="temp.roomJoinReply"/>
+          <a-textarea v-model="temp.roomJoinReply" :auto-size="{ minRows: 3, maxRows: 5 }" />
         </a-form-model-item>
         <a-form-model-item label="机器人控制">
           <a-switch checkedChildren="允许" :checked="temp.control" unCheckedChildren="禁止" @change="(e)=>this.temp.control=e"/>
@@ -73,6 +96,8 @@ export default {
       bodyStyle: {
         minHeight: '93px'
       },
+      filters: { search$$robotId$$: this.$auth.user.robotId || 0, search$$control$$: '' },
+      options: [{ value: '', title: '全部' }, { value: 0, title: '禁止' }, { value: 1, title: '允许' }],
       loading: false,
       visible: false,
       visible2:false,
@@ -84,18 +109,33 @@ export default {
     };
   },
   created() {
-    this.initData();
+    this.getList();
   },
   methods: {
-    async initData() {
-      let res = await this.$axios.$get("/admin/group?id="+this.robotId);
+    reset() {
+      this.filters = {
+        ...this.filters,
+        search$$control$$: '',
+        page: 1
+      }
+      this.getList();
+    },
+    async getList() {
+      this.loading = true;
+      const res = await this.$axios.$get("/admin/group", {
+        params: this.filters
+      });
+      this.loading = false;
       if (res) this.groups = res;
+    },
+    search() {
+      this.getList();
     },
     async save() {
       const { _id, ...vals } = this.temp;
       const res = await this.$axios.$put("/admin/group/" + _id, vals)
       if(res){
-        this.initData()
+        this.getList()
         this.visible = false
         this.temp = {}
         this.$notification.success({message:'操作提示',description:'修改成功'})

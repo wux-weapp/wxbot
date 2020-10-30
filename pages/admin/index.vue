@@ -45,7 +45,7 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="好友通过自动回复">
-          <a-textarea v-model="temp.addFriendReply" auto-size/>
+          <a-textarea v-model="temp.addFriendReply" :auto-size="{ minRows: 3, maxRows: 5 }" />
         </a-form-model-item>
         <a-form-model-item label="协议Token">
           <a-input-password autocomplete="new-password" v-model="temp.token"/>

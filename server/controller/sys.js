@@ -36,7 +36,7 @@ module.exports = {
   },
   getGroups: async (ctx) => {
     try {
-      const result = await groupDB.Dao.myGroups(ctx.query.id)
+      const result = await groupDB.Dao.myGroups(ctx.query)
       ctx.body = result
     } catch (err) { throw err }
   },
