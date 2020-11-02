@@ -1,5 +1,9 @@
 const { tianApiUrl, tianApiKey } = require('../../config')
 const urllib = require('urllib')
+const { v1 } = require('node-uuid')
+const crypto = require('crypto')
+const md5 = crypto.createHash('md5')
+const uniqueId = md5.update(v1()).digest('hex')
 
 const articleTypes = [
   '__JUEJIN__', '掘金早报',
@@ -25,6 +29,7 @@ async function request (url, params = {}) {
   if (status !== 200) return '不好意思，我断网了'
   data = JSON.parse(data.toString())
   // if (data.code != 200) return '我累啦，等我休息好再来哈'
+  // console.log(data)
   return data
 }
 
@@ -101,6 +106,37 @@ async function getArticleFromZHIHU () {
   return result
 }
 
+/**
+ * 机器人回复内容
+ * 
+ * @see https://www.tianapi.com/apiview/47
+ *
+ * @param {String} keyword 收到消息
+ * @returns
+ */
+async function getReplyToMSG (keyword) {
+  let url = tianApiUrl + 'robot/'
+  const pkg = {
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: {
+      key: tianApiKey,
+      question: keyword,
+      mode: 1,
+      datatype: 0,
+      userid: uniqueId,
+      limit: 1
+    },
+    encoding: null,
+    timeout: 5000,
+  }
+  const data = await request(url, pkg)
+  if (data.code != 200) return '我累啦，等我休息好再来哈'
+  return data.newslist[0].reply
+}
+
 async function getArticle (type) {
   let result = '不好意思，我断网了'
   switch (type) {
@@ -120,7 +156,12 @@ async function getArticle (type) {
   return result
 }
 
-async function getMSG (content) {
+/**
+ * 针对自定义内容进行回复
+ *
+ * @param {String} content 自定义内容
+ */
+async function getReplyToContent (content) {
   let type = content ? content.trim() : ''
   if (type && articleTypes.includes(type)) {
     try {
@@ -133,8 +174,24 @@ async function getMSG (content) {
   return type
 }
 
+/**
+ * 机器人回复内容
+ *
+ * @param {String} msg 收到消息
+ * @param {Number} type 消息类型, normal: 普通消息回复, keyword: 关键词内容回复, task: 定时任务内容回复
+ */
+async function getReply (msg, type = 'normal') {
+  switch (type) {
+    case 'keyword':
+    case 'task':
+      return await getReplyToContent(msg)
+    default:
+      return await getReplyToMSG(msg)
+  }
+}
+
 module.exports = {
-  getArticle,
-  articleTypes,
-  getMSG
+  getReplyToMSG,
+  getReplyToContent,
+  getReply
 }

@@ -9,7 +9,7 @@ const logger = require('../../util/logger')
 const schedule = require('node-schedule')
 const { Task } = require('../../models/task')
 const { Group } = require('../../models/group')
-const { getMSG } = require('../../util/ajax')
+const { getReply } = require('../../util/ajax')
 
 let tasks = {}
 /**
@@ -56,17 +56,17 @@ const start = async (data) => {
       logger.info(`${data.name} 定时任务已启动------`)
       if (data.factor == 0) {
         const contact = await bot.Contact.find({ id: data.friendId })
-        const msg = await getMSG(data.content)
+        const msg = await getReply(data.content, 'task')
         await contact.say(msg)
       }
       if (data.factor == 1) {
         const room = await bot.Room.find({ id: data.roomId })
-        const msg = await getMSG(data.content)
+        const msg = await getReply(data.content, 'task')
         await room.say(msg)
       }
       if (data.factor == 2) {
         const groups = await Group.find({ control: true }, { id: 1 })
-        const msg = await getMSG(data.content)
+        const msg = await getReply(data.content, 'task')
         for (let i = 0, len = groups.length; i < len; i++) {
           const room = await bot.Room.find({ id: groups[i].id })
           await room.say(msg)

@@ -10,13 +10,7 @@ const { Group } = require('../../models/group')
 const { Robot } = require('../../models/robot')
 const { Reply } = require('../../models/reply')
 const { Memory } = require('../../models/memory')
-const { getMSG } = require('../../util/ajax')
-const { v1 } = require('node-uuid')
-const crypto = require('crypto')
-let md5 = crypto.createHash('md5')
-const uniqueId = md5.update(v1()).digest('hex')
-const { tianApiUrl, tianApiKey } = require('../../../config')
-const urllib = require('urllib')
+const { getReply } = require('../../util/ajax')
 
 async function onMessage(msg) {
   if (msg.self()) return
@@ -40,7 +34,7 @@ async function onMessage(msg) {
         // 获取需要回复的内容
         let content = await keyWordReply(sendText, room.id)
         if (!content) {
-          content = await getReply(sendText)
+          content = await getReply(sendText, 'normal')
         }
         console.log(`reply: ${content}`)
         room.say(content)
@@ -71,7 +65,7 @@ async function onMessage(msg) {
     if (await isRoomName(msg)) return
     let content = await keyWordReply(msg.text())
     if (!content) {
-      content = await getReply(msg.text())
+      content = await getReply(msg.text(), 'normal')
     }
     console.log(`reply: ${content}`)
     await msg.say(content)
@@ -112,8 +106,8 @@ async function keyWordReply(keyword, roomId, person, room) {
     if (!res) return false
     if (roomId) { //群聊
       if (res.type == 0) {
-        if (res.factor == 0 || res.factor == 3) return getMSG(res.content)
-        if (res.factor == 2 && roomId == res.roomId) return getMSG(res.content)
+        if (res.factor == 0 || res.factor == 3) return getReply(res.content, 'keyword')
+        if (res.factor == 2 && roomId == res.roomId) return getReply(res.content, 'keyword')
       }
       if (res.type == 2) {
         if (person) {
@@ -143,38 +137,9 @@ async function keyWordReply(keyword, roomId, person, room) {
       content += '\n回复字母即可加入对应的群哦，比如发送 ' + roomList[0].joinCode
       return content
     }
-    if (res.factor == 0 || res.factor == 1) return res.content
+    if (res.factor == 0 || res.factor == 1) return getReply(res.content, 'keyword')
     return false
   } catch (err) { return false }
 }
 
-/**
- * @description 机器人回复内容
- * @param {String} 收到消息
- * @return {String} 响应内容
- */
-async function getReply(keyword) {
-  let url = tianApiUrl + 'robot/';
-  const pkg = {
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    data: {
-      key: tianApiKey,
-      question: keyword,
-      mode: 1,
-      datatype: 0,
-      userid: uniqueId,
-      limit: 1
-    },
-    encoding: null,
-    timeout: 5000,
-  }
-  let { status, data } = await urllib.request(url, pkg)
-  if (status !== 200) return '不好意思，我断网了'
-  data = JSON.parse(data.toString())
-  if (data.code != 200) return '我累啦，等我休息好再来哈'
-  return data.newslist[0].reply
-}
 module.exports = onMessage
