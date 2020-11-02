@@ -73,7 +73,7 @@ module.exports = {
   },
   deleteReply: async (ctx) => {
     try {
-      const result = await replyDB.Dao.delete(ctx.request.body.ids)
+      const result = await replyDB.Dao.delete(ctx.query['ids[]'])
       ctx.body = result
     } catch (err) { throw err }
   },
@@ -98,7 +98,7 @@ module.exports = {
   },
   deleteTask: async (ctx) => {
     try {
-      const result = await taskDB.Dao.delete(ctx.request.body.ids)
+      const result = await taskDB.Dao.delete(ctx.query['ids[]'])
       ctx.body = result
     } catch (err) { throw err }
   },

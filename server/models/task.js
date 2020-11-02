@@ -16,7 +16,7 @@ const schema = new Schema({
   friendId: String, //联系人
   roomId: String, //群id
   robotId: String, //机器人id
-
+  cron: String, //cron表达式
   unit: Number, //时间单位 
   dayOfWeek: Number,
   month: Number,

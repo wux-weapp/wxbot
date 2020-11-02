@@ -30,7 +30,7 @@
         <span slot="status" slot-scope="status">{{statusList[status]}}</span>
         <span slot="unit" slot-scope="text,record">
           {{units[text]}}
-          {{(record.hour||record.hour==0)?record.hour+'时':''}}{{(record.minute||record.minute==0)?record.minute+'分':''}}{{(record.second||record.second==0)&&'第'+record.second+'秒'}}
+          <template v-if="text !== 3">{{(record.hour||record.hour==0)?record.hour+'时':''}}{{(record.minute||record.minute==0)?record.minute+'分':''}}{{(record.second||record.second==0)&&'第'+record.second+'秒'}}</template>
         </span>
         <span slot="action" slot-scope="text,record,index">
           <a-button-group>
@@ -182,7 +182,7 @@ export default {
       });
     },
     async delete(ids, index) {
-      const res = await this.$axios.$delete("/admin/task", { data: { ids } });
+      const res = await this.$axios.$post("/admin/task", { ids });
       if (!res) return;
       if (index) return this.list.splice(index, 1);
       this.getList();

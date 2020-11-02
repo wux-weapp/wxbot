@@ -176,7 +176,7 @@ export default {
       });
     },
     async delete(ids, index) {
-      const res = await this.$axios.$delete("/admin/reply", { data: { ids } });
+      const res = await this.$axios.$post("/admin/reply", { ids });
       if (!res) return;
       if (index) return this.list.splice(index, 1);
       this.getList();

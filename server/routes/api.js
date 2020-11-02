@@ -20,11 +20,11 @@ router.get('/admin/friend', sysCtrl.getFriends)
 router.get('/admin/reply', sysCtrl.getReplys)
 router.post('/admin/reply', sysCtrl.addReply)
 router.put('/admin/reply/:id', sysCtrl.updateReply)
-router.delete('/admin/reply', sysCtrl.deleteReply)
+router.post('/admin/reply', sysCtrl.deleteReply)
 router.get('/admin/task', sysCtrl.getTasks)
 router.post('/admin/task', sysCtrl.addTask)
 router.put('/admin/task/:id', sysCtrl.updateTask)
-router.delete('/admin/task', sysCtrl.deleteTask)
+router.post('/admin/task', sysCtrl.deleteTask)
 
 
 

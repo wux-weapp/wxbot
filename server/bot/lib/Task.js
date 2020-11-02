@@ -52,7 +52,7 @@ const start = async (data) => {
     if (data.hour || data.hour == 0) rule.hour = data.hour
     if (data.dayOfWeek) rule.dayOfWeek = data.dayOfWeek
     if (data.dayOfMonth) rule.dayOfMonth = data.dayOfMonth
-    const sc = schedule.scheduleJob(rule, async () => {
+    const sc = schedule.scheduleJob(data.cron ? data.cron : rule, async () => {
       logger.info(`${data.name} 定时任务已启动------`)
       if (data.factor == 0) {
         const contact = await bot.Contact.find({ id: data.friendId })

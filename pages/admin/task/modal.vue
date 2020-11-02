@@ -4,7 +4,7 @@
       ref="temp"
       :model="temp"
       :rules="ruleValidate"
-      :labelCol="{span:4}"
+      :labelCol="{span:5}"
       :wrapperCol="{span:19}"
     >
       <a-form-model-item label="名称" prop="name">
@@ -46,14 +46,21 @@
           <a-radio v-for="(item,index) in units" :value="index" :key="index">{{item}}</a-radio>
         </a-radio-group>
       </a-form-model-item>
-      <a-form-model-item label="时" v-if="temp.unit>1" prop="hour">
-        <a-input-number v-model="temp.hour" :min="0" :max="23" />
-      </a-form-model-item>
-      <a-form-model-item label="分" v-if="temp.unit>0" prop="minute">
-        <a-input-number v-model="temp.minute" :min="0" :max="59" />
-      </a-form-model-item>
-      <a-form-model-item label="秒" prop="second">
-        <a-input-number v-model="temp.second" :min="0" :max="59" />
+      <template v-if="temp.unit !== 3">
+        <a-form-model-item label="时" v-if="temp.unit>1" prop="hour">
+          <a-input-number v-model="temp.hour" :min="0" :max="23" />
+        </a-form-model-item>
+        <a-form-model-item label="分" v-if="temp.unit>0" prop="minute">
+          <a-input-number v-model="temp.minute" :min="0" :max="59" />
+        </a-form-model-item>
+        <a-form-model-item label="秒" prop="second">
+          <a-input-number v-model="temp.second" :min="0" :max="59" />
+        </a-form-model-item>
+      </template>
+      <a-form-model-item label="cron表达式" prop="cron" v-else>
+        <a-input v-model="temp.cron" />
+        <a-textarea v-model="cronTips" auto-size disabled />
+        <div><a-icon type="question-circle"/> <a href="https://cron.qqe2.com/" target="_blank">在线Cron表达式生成器</a></div>
       </a-form-model-item>
       <a-form-model-item label="状态">
         <a-radio-group v-model="temp.status">
@@ -68,6 +75,17 @@
 </template>
 <script>
 import { taskFactors, statusList, units } from "../enume";
+
+// @see https://blog.csdn.net/tatetianos/article/details/103050707
+const regEx = new RegExp("^\\s*($|#|\\w+\\s*=|(\\?|\\*|(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?(?:,(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?)*)\\s+(\\?|\\*|(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?(?:,(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?)*)\\s+(\\?|\\*|(?:[01]?\\d|2[0-3])(?:(?:-|\\/|\\,)(?:[01]?\\d|2[0-3]))?(?:,(?:[01]?\\d|2[0-3])(?:(?:-|\\/|\\,)(?:[01]?\\d|2[0-3]))?)*)\\s+(\\?|\\*|(?:0?[1-9]|[12]\\d|3[01])(?:(?:-|\\/|\\,)(?:0?[1-9]|[12]\\d|3[01]))?(?:,(?:0?[1-9]|[12]\\d|3[01])(?:(?:-|\\/|\\,)(?:0?[1-9]|[12]\\d|3[01]))?)*)\\s+(\\?|\\*|(?:[1-9]|1[012])(?:(?:-|\\/|\\,)(?:[1-9]|1[012]))?(?:L|W)?(?:,(?:[1-9]|1[012])(?:(?:-|\\/|\\,)(?:[1-9]|1[012]))?(?:L|W)?)*|\\?|\\*|(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?(?:,(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?)*)\\s+(\\?|\\*|(?:[0-6])(?:(?:-|\\/|\\,|#)(?:[0-6]))?(?:L)?(?:,(?:[0-6])(?:(?:-|\\/|\\,|#)(?:[0-6]))?(?:L)?)*|\\?|\\*|(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?(?:,(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?)*)(|\\s)+(\\?|\\*|(?:|\\d{4})(?:(?:-|\\/|\\,)(?:|\\d{4}))?(?:,(?:|\\d{4})(?:(?:-|\\/|\\,)(?:|\\d{4}))?)*))$");
+const checkCron = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error('不能为空'));
+  } else if (value && !regEx.test(value)) {
+    callback(new Error('cron表达式不合法'));
+  }
+  callback();
+};
 const rules = {
   name: [{ required: true, message: "不能为空", trigger: "blur" }],
   content: [{ required: true, message: "不能为空", trigger: "blur" }],
@@ -77,7 +95,8 @@ const rules = {
   unit: [{ required: true, message: "请选择", trigger: "change" }],
   hour: [{ required: true, message: "不能为空", trigger: "blur" }],
   minute: [{ required: true, message: "不能为空", trigger: "blur" }],
-  second: [{ required: true, message: "不能为空", trigger: "blur" }]
+  second: [{ required: true, message: "不能为空", trigger: "blur" }],
+  cron: [{ validator: checkCron, trigger: "blur" }]
 };
 let timeout;
 export default {
@@ -86,6 +105,17 @@ export default {
   },
   data() {
     return {
+      cronTips: `
+# ┌──────────── second (optional)
+# │ ┌────────── minute
+# │ │ ┌──────── hour
+# │ │ │ ┌────── day of month
+# │ │ │ │ ┌──── month
+# │ │ │ │ │ ┌── day of week
+# │ │ │ │ │ │
+# │ │ │ │ │ │
+# * * * * * *
+      `,
       visible: false,
       ruleValidate: rules,
       taskFactors,
