@@ -148,6 +148,9 @@ export default {
         if (this.temp.unit == 1) {
           this.temp.hour = null;
         }
+        if (this.temp.unit != 3) {
+          this.temp.cron = null;
+        }
         this.$emit("onOK", this.temp);
       });
     },
