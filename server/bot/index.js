@@ -22,6 +22,14 @@ class Bot {
   }
   //启动
   async start() {
+    if (process.env.NODE_ENV === 'development' && process.env.ONLY_SITE === 'true') {
+      let info = '已启动站点调式模式，机器人相关操作被静止'
+      logger.info(info)
+      console.log(info)
+      return {
+        info
+      }
+    }
     const robot = await Robot.findOne({_id:this._id}, { token: 1, nickName: 1, id: 1 })
     if(!robot) throw {message:'机器人不存在'}
     if(!robot.token) throw {message:'缺少协议token'}
