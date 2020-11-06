@@ -1,7 +1,7 @@
 
-const { host, port } = require('./config')
+import { host, port } from './config'
 const server = { host, port }
-module.exports = {
+export default {
   mode: 'spa',
   /*
   ** Headers of the page
@@ -40,6 +40,7 @@ module.exports = {
   ** Nuxt.js dev-modules
   */
   buildModules: [
+    '@nuxt/typescript-build',
   ],
   /*
   ** Nuxt.js modules
@@ -88,7 +89,21 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
-    extend(config, ctx) {
+    extend(config: any, ctx: any) {
+      // if (ctx.isClient && ctx.isDev) {
+        const module = config.module
+        if (module) {
+          module.rules.push({
+            test: /\.ts$/,
+            exclude: ['/node_modules/', '/vendor/', '/.nuxt/'],
+            loader: 'ts-loader',
+            options: {
+              appendTsSuffixTo: [/\.vue$/],
+              transpileOnly: true
+            }
+          })
+        }
+      // }
     }
   }
 }
