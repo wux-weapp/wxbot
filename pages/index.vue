@@ -5,8 +5,12 @@
       <span v-else>控制台</span>
     </nuxt-link>
     <div>
-      <h1 class="title">wxbot</h1>
-      <h2 class="subtitle">让你的个人微信号成为微信机器人</h2>
+      <h1 class="title">
+        wxbot
+      </h1>
+      <h2 class="subtitle">
+        让你的个人微信号成为微信机器人
+      </h2>
       <div class="links">
         <a
           href="https://juejin.im/post/5ebbb7726fb9a043740ba7f9"
@@ -42,8 +46,8 @@
   color: #fff;
 }
 .title {
-  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
   display: block;
   font-weight: 300;
   font-size: 100px;

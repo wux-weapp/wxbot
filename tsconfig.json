@@ -16,6 +16,7 @@
     "noEmit": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
+    "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
       "~/*": [

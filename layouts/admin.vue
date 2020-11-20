@@ -1,42 +1,44 @@
 <template>
   <a-layout class="layout-admin">
     <a-layout-sider
+      v-if="!isSmallScreen"
+      v-model="collapsed"
       :trigger="null"
       collapsible
-      v-model="collapsed"
       breakpoint="lg"
       class="layout-sider"
-      v-if="!isSmallScreen"
     >
-      <div class="logo">{{title}}</div>
+      <div class="logo">
+        {{ title }}
+      </div>
       <a-menu theme="dark" mode="inline" :selected-keys="[currentKey]">
         <a-menu-item v-for="item in menuList" :key="item.index" :title="item.title">
           <nuxt-link :to="item.url">
-            <a-icon :type="item.icon" v-if="!item.icon.startsWith('icon')" />
-            <icon-font :type="item.icon" v-else />
-            <span>{{item.title}}</span>
+            <a-icon v-if="!item.icon.startsWith('icon')" :type="item.icon" />
+            <icon-font v-else :type="item.icon" />
+            <span>{{ item.title }}</span>
           </nuxt-link>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
     <a-drawer
+      v-else
       placement="left"
       width="200"
       :closable="false"
       :visible="drawerVisible"
       @close="() => (drawerVisible = !drawerVisible)"
-      v-else
     >
-      <a-layout-sider
-        class="layout-sider"
-      >
-        <div class="logo">{{this.$store.state.robot.appName}}</div>
+      <a-layout-sider class="layout-sider">
+        <div class="logo">
+          {{ this.$store.state.robot.appName }}
+        </div>
         <a-menu theme="dark" mode="inline" :selected-keys="[currentKey]">
           <a-menu-item v-for="item in menuList" :key="item.index" :title="item.title">
             <nuxt-link :to="item.url">
-              <a-icon :type="item.icon" v-if="!item.icon.startsWith('icon')" />
-              <icon-font :type="item.icon" v-else />
-              <span>{{item.title}}</span>
+              <a-icon v-if="!item.icon.startsWith('icon')" :type="item.icon" />
+              <icon-font v-else :type="item.icon" />
+              <span>{{ item.title }}</span>
             </nuxt-link>
           </a-menu-item>
         </a-menu>
@@ -44,15 +46,11 @@
     </a-drawer>
     <a-layout :style="{ marginLeft }">
       <a-layout-header class="layout-header">
-        <a-icon
-          class="trigger"
-          :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-          @click="onClick"
-        />
+        <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="onClick" />
         <div class="auth-actions">
           <a-dropdown placement="bottomRight">
             <span>
-              {{this.$auth.user.username}}
+              {{ this.$auth.user.username }}
               <a-icon type="down" />
             </span>
             <a-menu slot="overlay">
@@ -63,7 +61,7 @@
           </a-dropdown>
         </div>
       </a-layout-header>
-      <a-layout-content :style="{ margin: '10px 10px 0', overflow: 'initial'}">
+      <a-layout-content :style="{ margin: '10px 10px 0', overflow: 'initial' }">
         <nuxt />
       </a-layout-content>
       <a-layout-footer :style="{ textAlign: 'center' }">
@@ -74,76 +72,76 @@
 </template>
 
 <script lang="javascript">
-import Vue from "vue";
-import { Icon } from "ant-design-vue";
-import moment from "moment";
+import Vue from 'vue'
+import { Icon } from 'ant-design-vue'
+import moment from 'moment'
 const IconFont = Icon.createFromIconfontCN({
-  scriptUrl: "//at.alicdn.com/t/font_1770829_93vxtfu9rh.js"
-});
-Vue.filter("toDate", date => {
-  return moment(date).format("YYYY-MM-DD HH:mm:ss");
-});
+  scriptUrl: '//at.alicdn.com/t/font_1770829_93vxtfu9rh.js',
+})
+Vue.filter('toDate', (date) => {
+  return moment(date).format('YYYY-MM-DD HH:mm:ss')
+})
 export default {
-  middleware: "auth",
   components: {
-    IconFont
+    IconFont,
   },
-  data() {
+  middleware: 'auth',
+  data () {
     return {
       menuList: [{
         key: 'index',
         title: '控制台',
         url: '/admin',
-        icon: 'dashboard'
+        icon: 'dashboard',
       }, {
         key: 'reply',
         title: '自动回复',
         url: '/admin/reply',
-        icon: 'icon-chakantiezihuifu'
+        icon: 'icon-chakantiezihuifu',
       }, {
         key: 'friend',
         title: '我的好友',
         url: '/admin/friend',
-        icon: 'icon-haoyou'
+        icon: 'icon-haoyou',
       }, {
         key: 'group',
         title: '我的群聊',
         url: '/admin/group',
-        icon: 'icon-qun'
+        icon: 'icon-qun',
       }, {
         key: 'task',
         title: '定时任务',
         url: '/admin/task',
-        icon: 'icon-dingshirenwu'
+        icon: 'icon-dingshirenwu',
       }],
       isSmallScreen: false,
       drawerVisible: false,
       collapsed: false,
-      currentKey: ""
-    };
-  },
-  computed: {
-    title() {
-      return this.collapsed
-        ? this.$store.state.robot.appName.substr(0, 1)
-        : this.$store.state.robot.appName;
-    },
-    marginLeft() {
-      if (this.isSmallScreen) { return 0 }
-      return this.collapsed ? "80px" : "200px";
+      currentKey: '',
     }
   },
-  created() {
-    this.currentKey = this.getCurrentKey(this.$route.path);
-    this.$router.afterEach(to => {
-      this.currentKey = this.getCurrentKey(to.path);
-    });
+  computed: {
+    title () {
+      return this.collapsed
+        ? this.$store.state.robot.appName.substr(0, 1)
+        : this.$store.state.robot.appName
+    },
+    marginLeft () {
+      if (this.isSmallScreen) { return 0 }
+      return this.collapsed ? '80px' : '200px'
+    },
   },
-  mounted() {
+  created () {
+    this.currentKey = this.getCurrentKey(this.$route.path)
+    this.$router.afterEach((to) => {
+      this.currentKey = this.getCurrentKey(to.path)
+    })
+  },
+  mounted () {
     this.$nextTick(() => {
-      this.$nuxt.$loading.start();
-      setTimeout(() => this.$nuxt.$loading.finish(), 500);
-    });
+      this.$nuxt.$loading.start()
+      setTimeout(() => this.$nuxt.$loading.finish(), 500)
+    })
     this.onResize()
     window.addEventListener('resize', () => {
       this.onResize()
@@ -160,38 +158,44 @@ export default {
       }
       this.collapsed = !this.collapsed
     },
-    logout() {
-      this.$auth.logout("local");
+    logout () {
+      this.$auth.logout('local')
     },
-    getCurrentKey(originalPath) {
-      let path = originalPath.replace("/admin", "");
-      if (path.substring(0, 1) === "/") {
-        path = path.substring(1);
+    getCurrentKey (originalPath) {
+      let path = originalPath.replace('/admin', '')
+      if (path.substring(0, 1) === '/') {
+        path = path.substring(1)
       }
-      if (path.substring(path.length - 1) === "/") {
-        path = path.substring(0, path.length - 1);
+      if (path.substring(path.length - 1) === '/') {
+        path = path.substring(0, path.length - 1)
       }
       if (!path) {
-        return "index";
+        return 'index'
       }
-      return path;
-    }
-  }
+      return path
+    },
+  },
 }
 </script>
 <style>
-@media(max-width: 480px) {
+@media (max-width: 480px) {
   .ant-table {
-    width:100%;
+    width: 100%;
     overflow-x: auto;
   }
 
-  .ant-table-tbody>tr>td,.ant-table-tbody>tr>th,.ant-table-thead>tr>td,.ant-table-thead>tr>th {
-    white-space: pre
+  .ant-table-tbody > tr > td,
+  .ant-table-tbody > tr > th,
+  .ant-table-thead > tr > td,
+  .ant-table-thead > tr > th {
+    white-space: pre;
   }
 
-  .ant-table-tbody>tr>td>span,.ant-table-tbody>tr>th>span,.ant-table-thead>tr>td>span,.ant-table-thead>tr>th>span {
-    display: block
+  .ant-table-tbody > tr > td > span,
+  .ant-table-tbody > tr > th > span,
+  .ant-table-thead > tr > td > span,
+  .ant-table-thead > tr > th > span {
+    display: block;
   }
 }
 </style>
