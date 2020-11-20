@@ -13,25 +13,25 @@ import { Reply } from '../../models/reply'
 import { Memory } from '../../models/memory'
 import { getReply } from '../../util/ajax'
 
-async function onMessage (msg: any) {
+async function onMessage (msg: Message) {
   if (msg.self()) {
     return
   }
   console.log('=============================')
   console.log(`msg : ${msg}`)
-  console.log(`from: ${msg.from() ? msg.from().name() : null}: ${msg.from() ? msg.from().id : null}`)
+  console.log(`from: ${msg.from() ? msg.from()?.name() : null}: ${msg.from() ? msg.from()?.id : null}`)
   if (msg.type() === Message.Type.Text) {
-    if (msg.room()) {
-      // 来自群聊
-      const room = await msg.room()
+    // 来自群聊
+    const room = msg.room()
+    if (room) {
       const group = await Group.findOne({ id: room.id }, { control: 1 })
       if (!group || !group.control) {
         return
       }
       if (await msg.mentionSelf()) {
         // @自己
-        let self = await msg.to()
-        self = '@' + self.name()
+        let self = ''
+        self = '@' + global.bot.name()
         let sendText = msg.text().replace(self, '')
         sendText = sendText.trim()
         // 获取需要回复的内容
@@ -59,7 +59,7 @@ async function onMessage (msg: any) {
         if (person) {
           content = `@${person} ${content}`
         } else {
-          content = `「${msg.from().name()}：${msg.text()}」\n- - - - - - - - - - - - - - -\n${content}`
+          content = `「${msg.from()?.name()}：${msg.text()}」\n- - - - - - - - - - - - - - -\n${content}`
         }
         console.log(`reply: ${content}`)
         room.say(content)
