@@ -5,7 +5,7 @@
  * @LastEditors: skyvow
  * @LastEditTime: 2020-05-31 18:02:12
  */
-import { Message } from 'wechaty'
+import { Message, Room } from 'wechaty'
 import { IMemoryInfo } from '@/typings'
 import { Group } from '../../models/group'
 import { Robot } from '../../models/robot'
@@ -84,7 +84,7 @@ async function onMessage (msg: Message) {
  * @param {Object} msg 消息对象
  * @return {Bool}
  */
-async function isRoomName (msg: any): Promise<boolean> {
+async function isRoomName (msg: Message): Promise<boolean> {
   const group = await Group.findOne({ joinCode: msg.text() }, { id: 1 })
   if (group) {
     // 通过群聊id获取群聊实例
@@ -99,6 +99,7 @@ async function isRoomName (msg: any): Promise<boolean> {
   }
   return false
 }
+
 /**
  * 自定义回复
  * @param {string} keyword 关键字
@@ -106,7 +107,7 @@ async function isRoomName (msg: any): Promise<boolean> {
  * @param {string} person 艾特的群成员
  * @param {string} room 群聊
  */
-async function keyWordReply (keyword?: string, roomId?: string, person?: string, room?: any) {
+async function keyWordReply (keyword?: string, roomId?: string, person?: string, room?: Room) {
   try {
     const res = await Reply.findOne({ keyword, status: 1 }, { content: 1, type: 1, factor: 1, roomId: 1 })
     if (!res) {
@@ -125,7 +126,7 @@ async function keyWordReply (keyword?: string, roomId?: string, person?: string,
       if (res.type === 2) {
         if (person) {
           const group = await Group.findOne({ id: roomId }, { maxFoul: 1 })
-          if (!group) { return }
+          if (!group) { return false }
           let foulCount = await Memory.countDocuments({
             person,
             cmd: keyword,
@@ -133,6 +134,7 @@ async function keyWordReply (keyword?: string, roomId?: string, person?: string,
           })
           if (group.maxFoul - 1 === foulCount) {
             const contact = await global.bot.Contact.find({ name: person })
+            if (!room) { return false }
             await room.del(contact)
             await Memory.deleteMany({ person, roomId })
           } else {
@@ -147,9 +149,9 @@ async function keyWordReply (keyword?: string, roomId?: string, person?: string,
     // 私聊
     if (res.type === 1) {
       const robot = await Robot.findOne({ id: global.bot.id }, { id: 1, nickName: 1 })
-      if (!robot) { return }
+      if (!robot) { return false }
       const roomList = await Group.find({ robotId: robot.id, autojoin: true }, { topic: 1, id: 1, joinCode: 1 })
-      if (!roomList) { return }
+      if (!roomList) { return false }
       let content = `${robot.nickName}管理群聊有${roomList.length}个：\n\n`
       roomList.forEach((item: any) => {
         content += `${item.joinCode}：【${item.topic}】\n`

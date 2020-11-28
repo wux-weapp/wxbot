@@ -20,7 +20,7 @@ const schema = new Schema({
   lastLoginIp: String,
 })
 
-interface IRobotModel extends IRobotInfo, mongoose.Document {}
+export interface IRobotModel extends IRobotInfo, mongoose.Document {}
 
 const Robot = mongoose.model<IRobotModel>('robot', schema, 'robot')
 export { Robot }

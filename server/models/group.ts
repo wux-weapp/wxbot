@@ -17,7 +17,7 @@ const schema = new Schema({
   control: { type: Boolean, default: false },
 })
 
-interface IGroupModel extends IGroupInfo, mongoose.Document {}
+export interface IGroupModel extends IGroupInfo, mongoose.Document {}
 
 const Group = mongoose.model<IGroupModel>('group', schema, 'group')
 const Dao = {
@@ -32,7 +32,7 @@ const Dao = {
       throw err
     }
   },
-  update: async (id: number, params: IGroupInfo) => {
+  update: async (id: string, params: IGroupInfo) => {
     try {
       const result = await Group.findByIdAndUpdate(id, params, {
         new: true,

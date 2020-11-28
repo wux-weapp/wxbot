@@ -29,7 +29,7 @@ const schema = new Schema({
   second: Number,
 })
 
-interface ITaskModel extends ITaskInfo, mongoose.Document {}
+export interface ITaskModel extends ITaskInfo, mongoose.Document {}
 
 const Task = mongoose.model<ITaskModel>('task', schema, 'task')
 const Dao = {
@@ -57,7 +57,7 @@ const Dao = {
       throw err
     }
   },
-  update: async (_id: number, params: ITaskInfo) => {
+  update: async (_id: string, params: ITaskInfo) => {
     try {
       const result = await Task.findByIdAndUpdate({ _id }, params, {
         new: true,
@@ -68,7 +68,7 @@ const Dao = {
       throw err
     }
   },
-  delete: async (ids: number[]) => {
+  delete: async (ids: string[]) => {
     try {
       const result = await Task.deleteMany({ _id: { $in: ids } })
       ids.forEach(item => stop(item))

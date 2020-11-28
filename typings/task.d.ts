@@ -136,7 +136,7 @@ export interface ITaskInfo extends ITaskRuleInfo {
   /**
    * 时间单位 0:每分钟，1:每小时，2:每天，3:自定义
    *
-   * @type {number}
+   * @type {(0 | 1 | 2 | 3)}
    * @memberof ITaskInfo
    */
   unit: 0 | 1 | 2 | 3

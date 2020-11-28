@@ -7,12 +7,14 @@
  */
 import schedule from 'node-schedule'
 import logger from '../../util/logger'
-import { Task } from '../../models/task'
+import { ITaskModel, Task } from '../../models/task'
 import { Group } from '../../models/group'
 import { getReply } from '../../util/ajax'
 import { ITaskRuleInfo } from '~/typings'
 
-const tasks: any = {}
+const tasks: {
+  [key: string]: schedule.Job
+} = {}
 /**
  * 初始化任务列表
  */
@@ -29,7 +31,7 @@ const init = async () => {
  * 重启任务
  * @param {object} data
  */
-const restart = async (data: any) => {
+const restart = async (data: ITaskModel) => {
   try {
     if (!global.bot) {
       throw { message: '机器人已掉线，请重新登录' }
@@ -51,7 +53,7 @@ const restart = async (data: any) => {
  * 开启任务
  * @param {object} data
  */
-const start = async (data: any) => {
+const start = async (data: ITaskModel) => {
   try {
     const rule: ITaskRuleInfo = {
       second: data.second,
@@ -100,7 +102,7 @@ const start = async (data: any) => {
  * 当 id 存在时，停止指定的任务，否则停止所有任务
  * @param {string} id
  */
-const stop = async (id?: number) => {
+const stop = async (id?: string) => {
   try {
     if (!id) {
       for (const key in tasks) {

@@ -1,4 +1,4 @@
-import { IAuthInfo } from '@/typings'
+import { IAuthInfo, IRobotInfo } from '@/typings'
 import { mongoose } from '../config/db'
 import { encryptPassword, createToken } from '../util'
 import { Robot } from './robot'
@@ -15,7 +15,7 @@ const schema = new Schema({
   loginIp: String,
 })
 
-interface IAuthModel extends IAuthInfo, mongoose.Document {}
+export interface IAuthModel extends IAuthInfo, mongoose.Document {}
 
 const Auth = mongoose.model<IAuthModel>('auth', schema, 'auth')
 
@@ -34,7 +34,7 @@ const Dao = {
       throw err
     }
   },
-  getUser: async (userId: number) => {
+  getUser: async (userId: string) => {
     try {
       const user = await Auth.findOne({ _id: userId }, { username: 1 })
       if (!user) {
@@ -50,7 +50,7 @@ const Dao = {
       throw err
     }
   },
-  getRobot: async (_id: number) => {
+  getRobot: async (_id: string) => {
     try {
       const result = await Robot.findOne({ _id })
       return result
@@ -58,7 +58,7 @@ const Dao = {
       throw err
     }
   },
-  addRobot: async (params: any) => {
+  addRobot: async (params: IRobotInfo) => {
     try {
       const result = await Robot.create(params)
       return result
@@ -66,7 +66,7 @@ const Dao = {
       throw err
     }
   },
-  updateRobot: async (_id: number, params: IAuthInfo) => {
+  updateRobot: async (_id: string, params: IAuthInfo) => {
     try {
       const result = await Robot.updateOne({ _id }, params)
       return result

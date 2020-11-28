@@ -163,7 +163,7 @@ export default {
     async onChangeRobot (open) {
       this.loading = true
       if (!open) {
-        await this.$axios.$post('/robot/loginOut', { id: this.robot._id })
+        await this.$axios.$post('/robot/logout', { id: this.robot._id })
         this.robot.status = 0
         this.loading = false
         return this.$notification.warning({ message: '操作提示', description: '机器人已经退出' })

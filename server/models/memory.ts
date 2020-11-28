@@ -15,7 +15,7 @@ const schema = new Schema({
   remark: String, // 备注
 })
 
-interface IMemoryModel extends IMemoryInfo, mongoose.Document {}
+export interface IMemoryModel extends IMemoryInfo, mongoose.Document {}
 
 const Memory = mongoose.model<IMemoryModel>('memory', schema, 'memory')
 export { Memory }

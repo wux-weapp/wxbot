@@ -20,7 +20,7 @@ const schema = new Schema({
   remark: String, // 备注
 })
 
-interface IReplyModel extends IReplyInfo, mongoose.Document {}
+export interface IReplyModel extends IReplyInfo, mongoose.Document {}
 
 const Reply = mongoose.model<IReplyModel>('reply', schema, 'reply')
 const Dao = {
@@ -59,7 +59,7 @@ const Dao = {
       throw err
     }
   },
-  update: async (_id: number, params: IReplyInfo) => {
+  update: async (_id: string, params: IReplyInfo) => {
     try {
       const result = await Reply.updateOne({ _id }, params)
       return result
@@ -67,7 +67,7 @@ const Dao = {
       throw err
     }
   },
-  delete: async (ids: number[]) => {
+  delete: async (ids: string[]) => {
     try {
       const result = await Reply.deleteMany({ _id: { $in: ids } })
       return result

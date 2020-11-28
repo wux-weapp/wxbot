@@ -21,7 +21,7 @@ const schema = new Schema({
   robotId: String, // 机器人id
 })
 
-interface IFriendModel extends IFriendInfo, mongoose.Document {}
+export interface IFriendModel extends IFriendInfo, mongoose.Document {}
 
 const Friend = mongoose.model<IFriendModel>('friend', schema, 'friend')
 const Dao = {

@@ -12,6 +12,7 @@
  * @param {*} inviteeList 受邀者名单
  * @param {*} inviter 邀请者
  */
+import { Contact, Room } from 'wechaty'
 import { Group } from '../../models/group'
 async function onRoomJoin (room: any, inviteeList: any[], inviter: any) {
   const group = await Group.findOne({ id: room.id }, { roomJoinReply: 1 })
@@ -29,18 +30,18 @@ async function onRoomJoin (room: any, inviteeList: any[], inviter: any) {
 }
 /**
  * 踢出房间,此功能仅限于bot踢出房间,如果房间用户自己退出不会触发
- * @param {*} room
- * @param {*} leaverList
+ * @param {Room} room
+ * @param {Contact[]} leaverList
  */
-async function onRoomLeave (room: any, leaverList: any[]) {
-  const isrobot = leaverList.find((item: any) => item.id === global.bot.id)
+async function onRoomLeave (room: Room, leaverList: Contact[]) {
+  const isrobot = leaverList.find(item => item.id === global.bot.id)
   if (isrobot) {
     await Group.deleteOne({ id: room.id })
     return
   }
   const group = Group.findOne({ id: room.id }, { id: 1 })
   if (group) {
-    leaverList.forEach((c: any) => {
+    leaverList.forEach((c) => {
       room.say(`「${c.name()}」离开了群聊`)
     })
   }
