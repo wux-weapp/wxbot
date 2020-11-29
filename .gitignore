@@ -40,10 +40,13 @@
 ################################################
 
 .nuxt
+dist
 *-card.json
 .local.config.*
 static/apidoc/*
-dist
+dist.*
+.nuxt.*
+build.sh
 
 
 
