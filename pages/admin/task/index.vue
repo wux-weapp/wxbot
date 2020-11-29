@@ -183,7 +183,7 @@ export default {
     },
     handleDelete (ids, index) {
       this.$confirm({
-        title: '确定进行该操作吗??',
+        title: '确定删除该记录吗??',
         content: '该操作数据不可逆，请谨慎操作!!!',
         cancelText: '我再想想',
         okText: '确定',

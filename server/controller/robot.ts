@@ -251,7 +251,10 @@ class Index {
   static roomQuit = async (ctx: Context) => {
     try {
       const room = await global.bot.Room.find({ id: ctx.request.body.id })
-      await room.quit()
+      if (room) {
+        await Group.deleteOne({ id: ctx.request.body.id })
+        await room.quit()
+      }
       ctx.body = {}
     } catch (err) {
       throw err

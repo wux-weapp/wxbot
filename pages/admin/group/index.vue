@@ -37,6 +37,7 @@
             </a-card-meta>
             <template slot="actions" class="ant-card-actions">
               <a-icon key="setting" type="setting" @click="handleSet(item.id)" />
+              <a-icon key="usergroup-delete" type="usergroup-delete" @click="handleExit(item.id)" />
               <a-icon key="edit" type="edit" @click="handleEdit(item)" />
               <a-icon key="message" type="message" @click="handleSay(item)" />
             </template>
@@ -147,6 +148,24 @@ export default {
         this.temp = {}
         this.$notification.success({ message: '操作提示', description: '修改成功' })
       }
+    },
+    async handleExit (id) {
+      this.$confirm({
+        title: '确定退出该群聊吗??',
+        content: '该操作数据不可逆，请谨慎操作!!!',
+        cancelText: '我再想想',
+        okText: '确定',
+        onOk: () => {
+          this.exit(id)
+        },
+      })
+    },
+    async exit (id) {
+      const res = await this.$axios.$post('/robot/room/quit', { id })
+      if (!res) {
+        return
+      }
+      this.getList()
     },
     async handleSet (id) {
       const temp = { id }
