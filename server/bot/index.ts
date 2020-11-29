@@ -13,6 +13,7 @@ import { onLogin, onLogout } from './lib/Login'
 import onFriendShip from './lib/FriendShip'
 import onMessage from './lib/Message'
 import { onRoomJoin, onRoomLeave } from './lib/Room'
+import { ContactSelf } from 'wechaty/dist/src/user/mod'
 class Bot {
   _id: string
   debug: boolean
@@ -37,7 +38,7 @@ class Bot {
         info,
       }
     }
-    const robot: any = await Robot.findOne({ _id: this._id }, { token: 1, nickName: 1, id: 1 })
+    const robot = await Robot.findOne({ _id: this._id }, { token: 1, nickName: 1, id: 1 })
     if (!robot) {
       throw { message: '机器人不存在' }
     }
@@ -58,7 +59,7 @@ class Bot {
             resolve({ qrcode })
           }
         })
-        .on('login', async (user) => {
+        .on('login', async (user: ContactSelf) => {
           const res = await onLogin(bot, this._id, user)
           resolve(res)
         })

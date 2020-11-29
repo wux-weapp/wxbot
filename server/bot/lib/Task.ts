@@ -25,7 +25,7 @@ const init = async () => {
   for (let i = 0; i < list.length; i++) {
     await start(list[i])
   }
-  logger.info(`已初始化${list.length}个任务`)
+  logger.info(`已初始化 ${list.length} 个任务`)
 }
 /**
  * 重启任务

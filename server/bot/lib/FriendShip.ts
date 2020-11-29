@@ -9,9 +9,12 @@ import { Friendship } from 'wechaty'
 import logger from '../../util/logger'
 import { Robot } from '../../models/robot'
 const onFriendShip = async (friendship: Friendship) => {
+  const contact = friendship.contact()
+  const name = contact.name()
+  const hello = friendship.hello()
   let log: string
   try {
-    log = '添加好友' + friendship.contact().name()
+    log = `添加好友 ${name}`
     logger.info(log)
     const robot = await Robot.findOne({ id: global.bot.id }, { addFriendKeywords: 1, addFriendReply: 1 })
     if (!robot) { return }
@@ -22,23 +25,23 @@ const onFriendShip = async (friendship: Friendship) => {
        * 通过'request.accept()'接受请求
        */
       case Friendship.Type.Receive:
-        if (robot.addFriendKeywords.some((str: string) => str === friendship.hello())) {
-          log = `自动添加好友成功,因为验证消息是"${friendship.hello()}"`
+        if (robot.addFriendKeywords.some(str => str === hello)) {
+          log = `自动添加好友成功,因为验证消息是 "${hello}"`
           // 通过验证
           await friendship.accept()
         } else {
-          log = `没有通过验证:因为关键词"${friendship.hello()}"不匹配`
+          log = `没有通过验证:因为关键词 "${hello}" 不匹配`
         }
         break
       /**
        * 确认添加
        */
       case Friendship.Type.Confirm:
-        log = `${friendship.contact().name()}已经添加你为好友`
+        log = `${name} 已经添加你为好友`
         // 发个提示
-        global.bot.say(`${friendship.contact().name()}添加了你为好友`)
+        global.bot.say(`${name} 添加了你为好友`)
         if (robot.addFriendReply) {
-          await friendship.contact().say(robot.addFriendReply)
+          await contact.say(robot.addFriendReply)
         }
         break
     }

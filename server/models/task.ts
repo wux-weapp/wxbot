@@ -62,7 +62,9 @@ const Dao = {
       const result = await Task.findByIdAndUpdate({ _id }, params, {
         new: true,
       })
-      await restart(result)
+      if (result) {
+        await restart(result)
+      }
       return result
     } catch (err) {
       throw err

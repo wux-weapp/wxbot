@@ -153,7 +153,7 @@ async function keyWordReply (keyword?: string, roomId?: string, person?: string,
       const roomList = await Group.find({ robotId: robot.id, autojoin: true }, { topic: 1, id: 1, joinCode: 1 })
       if (!roomList) { return false }
       let content = `${robot.nickName}管理群聊有${roomList.length}个：\n\n`
-      roomList.forEach((item: any) => {
+      roomList.forEach(item => {
         content += `${item.joinCode}：【${item.topic}】\n`
       })
       content += '\n回复字母即可加入对应的群哦，比如发送 ' + roomList[0].joinCode

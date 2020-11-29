@@ -10,6 +10,7 @@ import { Robot } from '../../models/robot'
 import { Group } from '../../models/group'
 import { Friend } from '../../models/friend'
 import { init, stop } from './Task'
+import { ContactSelf } from 'wechaty/dist/src/user/mod'
 /**
  * 登录
  * @param {object} bot
@@ -19,8 +20,8 @@ import { init, stop } from './Task'
 const onLogin = async (bot: any, robotId: string, user: any) => {
   const robot = await Robot.findOne({ _id: robotId }, { startSay: 1, nickName: 1 })
   if (!robot) { return }
-  logger.info(`机器人${robot.nickName} 登陆啦!!!`)
-  console.log(`机器人${robot.nickName} 登陆啦!!!`)
+  logger.info(`机器人 "${robot.nickName}" 登陆啦!!!`)
+  console.log(`机器人 "${robot.nickName}" 登陆啦!!!`)
   await Robot.updateOne(
     { _id: robotId },
     {
@@ -69,13 +70,13 @@ const onLogin = async (bot: any, robotId: string, user: any) => {
 }
 /**
  * 退出
- * @param {String} user
+ * @param {ContactSelf} user
  */
-async function onLogout (user: string) {
+async function onLogout (user: ContactSelf) {
   await Robot.updateOne({ id: global.bot.id }, { status: 0 })
   stop()
   delete global.bot
-  logger.info(`机器人${user} 退出`)
+  logger.info(`机器人 "${user.name()}" 退出!!!`)
 }
 export { onLogin, onLogout }
 
