@@ -13,7 +13,7 @@
       </h2>
       <div class="links">
         <a
-          href="https://juejin.im/post/5ebbb7726fb9a043740ba7f9"
+          href="https://juejin.im/post/6897076787931512839"
           target="_blank"
           class="button--green"
         >Documentation</a>
