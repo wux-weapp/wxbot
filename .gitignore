@@ -41,6 +41,7 @@
 
 .nuxt
 dist
+tmp
 *-card.json
 .local.config.*
 static/apidoc/*

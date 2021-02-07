@@ -19,7 +19,7 @@ async function onMessage (msg: Message) {
   }
   console.log('=============================')
   console.log(`msg : ${msg}`)
-  console.log(`from: ${msg.from() ? msg.from()?.name() : null}: ${msg.from() ? msg.from()?.id : null}`)
+  console.log(`from: ${msg.talker() ? msg.talker().name() : null}: ${msg.talker() ? msg.talker().id : null}`)
   if (msg.type() === Message.Type.Text) {
     // 来自群聊
     const room = msg.room()
@@ -59,7 +59,7 @@ async function onMessage (msg: Message) {
         if (person) {
           content = `@${person} ${content}`
         } else {
-          content = `「${msg.from()?.name()}：${msg.text()}」\n- - - - - - - - - - - - - - -\n${content}`
+          content = `「${msg.talker().name()}：${msg.text()}」\n- - - - - - - - - - - - - - -\n${content}`
         }
         console.log(`reply: ${content}`)
         room.say(content)
@@ -89,11 +89,11 @@ async function isRoomName (msg: Message): Promise<boolean> {
   if (group) {
     // 通过群聊id获取群聊实例
     const room = await global.bot.Room.find({ id: group.id })
-    if (await room.has(msg.from())) {
+    if (await room.has(msg.talker())) {
       await msg.say('您已经在群聊中了')
       return true
     }
-    await room.add(msg.from())
+    await room.add(msg.talker())
     await msg.say('已发送群邀请')
     return true
   }

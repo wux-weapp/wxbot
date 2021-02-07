@@ -1,7 +1,10 @@
 import crypto from 'crypto'
+import { FileBox } from 'file-box'
 import urllib from 'urllib'
 import { v1 } from 'node-uuid'
 import config from '../../config'
+import { getTGImage } from './tiangou'
+import { Contact, UrlLink, MiniProgram } from 'wechaty'
 const md5 = crypto.createHash('md5')
 const uniqueId = md5.update(v1()).digest('hex')
 
@@ -84,8 +87,9 @@ async function getArticleFromTIANGOU () {
   if (data.code !== 200) {
     return '我累啦，等我休息好再来哈'
   }
-  const result = [`舔狗日记 - ${getDateString(['年', '月', '日']).slice(5)}`, data.newslist[0].content].join('\n')
-  return result
+  const tg = await getTGImage(data.newslist[0].content)
+  const fileBox = FileBox.fromFile(tg.filePath, 'tgrj.png')
+  return fileBox
 }
 
 /**
@@ -146,7 +150,7 @@ async function getReplyToMSG (keyword: string) {
 }
 
 async function getArticle (type: string) {
-  let result = '不好意思，我断网了'
+  let result: any = '不好意思，我断网了'
   switch (type) {
     case '__JUEJIN__':
     case '掘金早报':
@@ -170,7 +174,7 @@ async function getArticle (type: string) {
  * @param {String} content 自定义内容
  */
 async function getReplyToContent (content: string) {
-  let type = content ? content.trim() : ''
+  let type: any = content ? content.trim() : ''
   if (type && articleTypes.includes(type)) {
     try {
       const msg = await getArticle(type)

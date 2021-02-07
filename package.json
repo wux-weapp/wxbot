@@ -24,6 +24,8 @@
     "@nuxtjs/auth": "4.9.1",
     "@nuxtjs/axios": "5.9.7",
     "ant-design-vue": "1.6.5",
+    "canvas": "^2.6.1",
+    "file-box": "^0.16.4",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.6.2",
     "koa-bodyparser": "^4.3.0",
