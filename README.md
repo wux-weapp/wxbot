@@ -81,9 +81,13 @@ Wechaty.instance()
 
 看了看，内部通道是不可能的，只有ipad协议个mac协议目前最好了
 
-## wechaty-puppet-padplus
+## wechaty-puppet
 
-使用 [wechaty-puppet-padplus](https://github.com/wechaty/wechaty-puppet-padplus) 一套基于 ipad 协议的包。不过天下没有免费的午餐，需要申请 `token`，见 [Wechaty Token 申请及使用文档和常见问题](https://github.com/juzibot/Welcome/wiki/Everything-about-Wechaty)。
+~~使用 [wechaty-puppet-padplus](https://github.com/wechaty/wechaty-puppet-padplus) 一套基于 ipad 协议的包。~~
+
+目前 ~~wechaty-puppet-padplus~~ 已弃用，后续使用 [wechaty-puppet-service](https://github.com/wechaty/wechaty-puppet-service)。
+
+不过天下没有免费的午餐，需要申请 `token`，见 [Wechaty Token 申请及使用文档和常见问题](https://github.com/juzibot/Welcome/wiki/Everything-about-Wechaty)。
 
 ## 聊天机器人 API
 
@@ -136,7 +140,7 @@ Wechaty.instance()
 - 前端框架 [Vue](https://vuejs.org/)
 - UI组件 [Ant Design of Vue](https://www.antdv.com/docs/vue/introduce-cn/)
 - 持久化 [MongoDB](https://www.mongodb.org/)
-- ipad协议 [wechaty-puppet-padplus](https://github.com/wechaty/wechaty-puppet-padplus/)
+- 协议 [wechaty-puppet-service](https://github.com/wechaty/wechaty-puppet-service)
 
 这里就直接介绍下机器人模块
 
@@ -165,14 +169,6 @@ cnpm i
 ```
 
 #### 启动服务
-
-- 本地单机插件版本
-
-首先需要修改配置文件 `local/config.js` 或者根目录创建 `.local.config.js` 配置文件（此文件已加入 `.gitignore` 中可以防止 `token` 敏感信息上传至 `git`）。
-
-```sh
-npm run local
-```
 
 - 开发模式
 
@@ -262,6 +258,17 @@ pm2 start pm2.config.js
 
 - 原因是项目会动态生成中 `logs` 目录中的文件，报错权限不足，即 `permission denied`
 - 参考文章 [解决 pm2 中的 permission denied 问题](https://blog.csdn.net/geol200709/article/details/81744477)
+
+4.Ubuntu MaxReports 报错问题
+
+- 安装报错依赖关系问题
+- 参考文章 [Ubuntu16.04 由于已经达到 MaxReports 限制，没有写入 apport 报告](https://blog.csdn.net/lanhaixuanvv/article/details/78387545?locationNum=1&fps=1)
+
+5.Ubuntu 安装 node-canvas 以及中文乱码/自定义字体的问题
+
+- 首先 sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev 安装完成后 npm install canvas
+- 中文乱码/自定义字体的问题解决方案：①安装 sudo apt-get install ttf-wqy-microhei #文泉驿-微米黑 ②注册 registerFont('/usr/share/fonts/truetype/wqy/wqy-microhei.ttc', { family: 'WQY' }) ③使用 ctx.font = 'bold 22px "WYQ"'
+- 参考文章 [node-canvas](https://github.com/Automattic/node-canvas)
 
 ## 感谢
 
