@@ -46,7 +46,7 @@ class Bot {
       throw { message: '缺少协议token' }
     }
     const bot = new Wechaty({
-      puppet: 'wechaty-puppet-hostie',
+      puppet: 'wechaty-puppet-service',
       puppetOptions: {
         token: robot.token,
       },

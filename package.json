@@ -39,9 +39,9 @@
     "urllib": "^2.34.2",
     "vue-class-component": "^7.2.6",
     "vue-property-decorator": "^9.0.2",
-    "wechaty": "^0.51.1",
-    "wechaty-puppet": "^0.32.3",
-    "wechaty-puppet-hostie": "^0.10.8"
+    "wechaty": "^0.56.6",
+    "wechaty-puppet": "^0.34.1",
+    "wechaty-puppet-service": "^0.14.5"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.7",
