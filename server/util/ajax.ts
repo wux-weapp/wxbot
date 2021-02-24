@@ -4,7 +4,6 @@ import urllib from 'urllib'
 import { v1 } from 'node-uuid'
 import config from '../../config'
 import { getTGImage } from './tiangou'
-import { Contact, UrlLink, MiniProgram } from 'wechaty'
 const md5 = crypto.createHash('md5')
 const uniqueId = md5.update(v1()).digest('hex')
 
@@ -80,15 +79,27 @@ async function getArticleFromJUEJIN () {
  *
  * @returns
  */
-async function getArticleFromTIANGOU () {
-  const data = await request(tianApiUrl + 'tiangou/index', {
-    data: { key: tianApiKey },
-  })
-  if (data.code !== 200) {
-    return '我累啦，等我休息好再来哈'
+async function getArticleFromTIANGOU (args: any[] = []) {
+  const day = new Date().getDate()
+  const month = new Date().getMonth() + 1
+  const d = `${month}月${day}日`
+  const [type = 'P', date = d, weather = '晴', content] = args
+  let data: string = content
+  if (!content) {
+    const res = await request(tianApiUrl + 'tiangou/index', {
+      data: { key: tianApiKey },
+    })
+    if (res.code !== 200) {
+      return '我累啦，等我休息好再来哈'
+    }
+    data = res.newslist[0].content
   }
-  const tg = await getTGImage(data.newslist[0].content)
-  const fileBox = FileBox.fromFile(tg.filePath, 'tgrj.png')
+  if (type !== 'P') { return data }
+  const dataUrl = await getTGImage(data, {
+    date,
+    weather
+  })
+  const fileBox = FileBox.fromDataURL(dataUrl, 'tgrj.png')
   return fileBox
 }
 
@@ -149,7 +160,7 @@ async function getReplyToMSG (keyword: string) {
   return data.newslist[0].reply
 }
 
-async function getArticle (type: string) {
+async function getArticle (type: string, args: any[] = []) {
   let result: any = '不好意思，我断网了'
   switch (type) {
     case '__JUEJIN__':
@@ -158,7 +169,7 @@ async function getArticle (type: string) {
       break
     case '__TIANGOU__':
     case '舔狗日记':
-      result = await getArticleFromTIANGOU()
+      result = await getArticleFromTIANGOU(args)
       break
     case '__ZHIHU__':
     case '知乎日报':
@@ -168,19 +179,19 @@ async function getArticle (type: string) {
   return result
 }
 
+getArticle('__TIANGOU__', ['P', '2.25', '小雨'])
+
 /**
  * 针对自定义内容进行回复
  *
  * @param {String} content 自定义内容
  */
-async function getReplyToContent (content: string) {
-  let type: any = content ? content.trim() : ''
+async function getReplyToContent (content: string, args: any[] = []) {
+  const [type = '', ...argsH] = content ? content.split(' ') : []
   if (type && articleTypes.includes(type)) {
     try {
-      const msg = await getArticle(type)
-      if (msg) {
-        type = msg
-      }
+      const msg = await getArticle(type, argsH.length ? argsH : args)
+      return msg
     } catch (err) {
       console.log(err)
     }
@@ -194,11 +205,11 @@ async function getReplyToContent (content: string) {
  * @param {String} msg 收到消息
  * @param {Number} type 消息类型, normal: 普通消息回复, keyword: 关键词内容回复, task: 定时任务内容回复
  */
-async function getReply (msg: string = '', type: 'normal' | 'keyword' | 'task' = 'normal') {
+async function getReply (msg: string = '', type: 'normal' | 'keyword' | 'task' = 'normal', args?) {
   switch (type) {
     case 'keyword':
     case 'task':
-      return await getReplyToContent(msg)
+      return await getReplyToContent(msg, args)
     default:
       return await getReplyToMSG(msg)
   }

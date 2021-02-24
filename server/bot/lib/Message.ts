@@ -102,12 +102,13 @@ async function isRoomName (msg: Message): Promise<boolean> {
 
 /**
  * 自定义回复
- * @param {string} keyword 关键字
+ * @param {string} _keyword 关键字
  * @param {string} roomId 群聊id
  * @param {string} person 艾特的群成员
  * @param {string} room 群聊
  */
-async function keyWordReply (keyword?: string, roomId?: string, person?: string, room?: Room) {
+async function keyWordReply (_keyword?: string, roomId?: string, person?: string, room?: Room) {
+  const [keyword, ...args] = _keyword ? _keyword.split(' ') : []
   try {
     const res = await Reply.findOne({ keyword, status: 1 }, { content: 1, type: 1, factor: 1, roomId: 1 })
     if (!res) {
@@ -117,10 +118,10 @@ async function keyWordReply (keyword?: string, roomId?: string, person?: string,
       // 群聊
       if (res.type === 0) {
         if (res.factor === 0 || res.factor === 3) {
-          return getReply(res.content, 'keyword')
+          return getReply(res.content, 'keyword', args)
         }
         if (res.factor === 2 && roomId === res.roomId) {
-          return getReply(res.content, 'keyword')
+          return getReply(res.content, 'keyword', args)
         }
       }
       if (res.type === 2) {
@@ -160,7 +161,7 @@ async function keyWordReply (keyword?: string, roomId?: string, person?: string,
       return content
     }
     if (res.factor === 0 || res.factor === 1) {
-      return getReply(res.content, 'keyword')
+      return getReply(res.content, 'keyword', args)
     }
     return false
   } catch (err) {
