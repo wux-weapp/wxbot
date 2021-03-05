@@ -136,7 +136,7 @@ async function getArticleFromZHIHU () {
  * @returns
  */
 async function getReplyToMSG (keyword: string) {
-  const url = tianApiUrl + 'robot/'
+  const url = tianApiUrl + 'robot/index'
   const pkg = {
     method: 'get',
     headers: {
