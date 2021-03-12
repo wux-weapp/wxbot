@@ -45,7 +45,7 @@ async function request (url: string, params: any = {}) {
  * @returns
  */
 async function getArticleFromJUEJIN () {
-  const data = await request('https://apinew.juejin.im/recommend_api/v1/article/recommend_all_feed', {
+  const data = await request('https://api.juejin.cn/recommend_api/v1/article/recommend_all_feed', {
     method: 'POST',
     data: {
       id_type: 2,
